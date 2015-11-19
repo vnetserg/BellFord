@@ -1,21 +1,28 @@
 # -*- coding: utf-8 -*-
 
+import pickle
+
 from PyQt5 import QtCore, QtWidgets
 
 from model import Model
 from models.listmodel import ListModel
 from models.tablemodel import TableModel
 
-from speculation import Speculation
+from algorithm.speculation import Speculation
 
 class ModelManager:
     def __init__(self, window):
         self._window = window
-        self._model = Model()
-        self._listModel = ListModel(self._model, self, parent = window)
-        self._tableModel = TableModel(self._model, self, parent = window)
-        window.ui.listView.setModel(self._listModel)
-        window.ui.tableView.setModel(self._tableModel)
+        self._setModel(Model())
+    
+    def _setModel(self, model):
+        self._model = model
+        self._listModel = ListModel(self._model, self, parent = self._window)
+        self._tableModel = TableModel(self._model, self, parent = self._window)
+        self._window.ui.listView.setModel(self._listModel)
+        self._window.ui.tableView.setModel(self._tableModel)
+        self._window.ui.pathEdit.clear()
+        self._window.ui.ratioEdit.clear()
 
     def addCurrency(self, cur):
         if self._model.hasCurrency(cur):
@@ -68,3 +75,22 @@ class ModelManager:
 
     def speculation(self):
         return Speculation(self._model)
+
+    def loadModel(self, filename):
+        try:
+            model = pickle.load(open(filename, "rb"))
+            if not isinstance(model, Model):
+                raise ValueError
+        except:
+            QtWidgets.QMessageBox.critical(self._window, "Ошибка чтения",
+                "Не удалось открыть файл - неверный формат.")
+        else:
+            self._setModel(model)
+
+    def saveModel(self, filename):
+        try:
+            pickle.dump(self._model, open(filename, "wb"))
+        except:
+            QtWidgets.QMessageBox.critical(self._window, "Ошибка записи",
+                "Не удалось записать таблицу в файл.")
+            raise

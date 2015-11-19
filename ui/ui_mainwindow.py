@@ -123,6 +123,9 @@ class Ui_MainWindow(object):
         self.calcButton.setText(_translate("MainWindow", "Рассчитать"))
         self.menu.setTitle(_translate("MainWindow", "Файл"))
         self.file_open.setText(_translate("MainWindow", "Открыть..."))
+        self.file_open.setShortcut(_translate("MainWindow", "Ctrl+O"))
         self.file_save.setText(_translate("MainWindow", "Сохранить как..."))
+        self.file_save.setShortcut(_translate("MainWindow", "Ctrl+S"))
         self.file_quit.setText(_translate("MainWindow", "Выход"))
+        self.file_quit.setShortcut(_translate("MainWindow", "Ctrl+Q"))
 

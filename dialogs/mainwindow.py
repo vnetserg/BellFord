@@ -17,6 +17,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.addButton.pressed.connect(self.addButtonPressed)
         self.ui.deleteButton.pressed.connect(self.deleteButtonPressed)
         self.ui.calcButton.pressed.connect(self.calcButtonPressed)
+        self.ui.file_open.triggered.connect(self.open)
+        self.ui.file_save.triggered.connect(self.save)
 
     def addButtonPressed(self):
         cur, flag = QtWidgets.QInputDialog.getText(self, "Ввод названия", "Введите название валюты:")
@@ -35,9 +37,19 @@ class MainWindow(QtWidgets.QMainWindow):
         spec = self._manager.speculation()
         if spec.exists:
             self.ui.pathEdit.setText(" -> ".join(spec.path + spec.path[0:1]))
-            self.ui.ratioEdit.setText(str(spec.ratio))
+            self.ui.ratioEdit.setText("{:.5f}".format(spec.ratio))
         else:
             self.ui.pathEdit.clear()
             self.ui.ratioEdit.clear()
             QtWidgets.QMessageBox.information(self, "Решения нет",
                 "В данных условиях спекуляция невозможна.")
+
+    def open(self):
+        filename = QtWidgets.QFileDialog.getOpenFileName(self, u'Открыть', filter = u"Таблица валют (*.ctb);;Все файлы (*.*)")[0]
+        if filename:
+            self._manager.loadModel(filename)
+
+    def save(self):
+        filename = QtWidgets.QFileDialog.getSaveFileName(self, u'Сохранить', filter = u"Таблица валют (*.ctb);;Все файлы (*.*)")[0]
+        if filename:
+            self._manager.saveModel(filename)

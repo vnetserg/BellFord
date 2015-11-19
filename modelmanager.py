@@ -74,7 +74,9 @@ class ModelManager:
         return True
 
     def speculation(self):
-        return Speculation(self._model)
+        if self._model.numCurrencies() > 0:
+            return Speculation(self._model)
+        return None
 
     def loadModel(self, filename):
         try:

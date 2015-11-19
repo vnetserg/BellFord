@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from PyQt5 import QtWidgets
+from PyQt5 import QtWidgets, QtGui
 from ui.ui_mainwindow import Ui_MainWindow
 
 from modelmanager import ModelManager
@@ -10,6 +10,7 @@ class MainWindow(QtWidgets.QMainWindow):
         super(MainWindow, self).__init__(parent)
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
+        self.setWindowIcon(QtGui.QIcon("res/dollar-icon.png"))
         self.connectAll()
         self._manager = ModelManager(self)
 
@@ -35,7 +36,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def calcButtonPressed(self):
         spec = self._manager.speculation()
-        if spec.exists:
+        if spec is not None and spec.exists:
             self.ui.pathEdit.setText(" -> ".join(spec.path + spec.path[0:1]))
             self.ui.ratioEdit.setText("{:.5f}".format(spec.ratio))
         else:
